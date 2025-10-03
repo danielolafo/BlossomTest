@@ -7,11 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import lombok.Builder;
+
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
+@Builder
 public class Role {
 
     @Id

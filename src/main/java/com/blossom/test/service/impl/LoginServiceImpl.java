@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
+import com.blossom.test.entity.Role;
 import com.blossom.test.entity.User;
 import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.repository.UserRepository;
@@ -21,14 +23,15 @@ public class LoginServiceImpl implements LoginService {
 	
 	private final JwtService jwtService;
 	private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder passwordEncoder;
 	
 	public LoginServiceImpl(
 			JwtService jwtService,
 			UserRepository userRepository,
 	        AuthenticationManager authenticationManager,
-	        PasswordEncoder passwordEncoder) {
+	        BCryptPasswordEncoder passwordEncoder) {
 		this.jwtService = jwtService;
 		this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -64,5 +67,23 @@ public class LoginServiceImpl implements LoginService {
 
 	        return userRepository.findByUsername(loginDto.getUsername()).orElseThrow();
 	    }
+
+	@Override
+	public ResponseEntity<LoginResponseDto> signup(LoginDto loginDto) throws InvalidUserException {
+		if(loginDto.getUsername().isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		if(loginDto.getPassword().isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		User newUser = User.builder()
+				.email(loginDto.getUsername())
+				.username(loginDto.getUsername())
+				.uPassword(passwordEncoder.encode(loginDto.getPassword()))
+				.role(Role.builder().id(1).build())
+				.build();
+		userRepository.save(newUser);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
 }

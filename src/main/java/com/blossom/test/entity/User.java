@@ -19,10 +19,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.Builder;
 
 
 @Entity
 @Table(name = "\"User\"")
+@Builder
 public class User implements UserDetails{
 
     @Id

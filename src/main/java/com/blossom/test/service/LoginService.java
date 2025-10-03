@@ -10,5 +10,7 @@ import com.blossom.test.exception.InvalidUserException;
 public interface LoginService {
 	
 	public ResponseEntity<LoginResponseDto> login(LoginDto loginDto) throws InvalidUserException;
+	
+	public ResponseEntity<LoginResponseDto> signup(LoginDto loginDto) throws InvalidUserException;
 
 }

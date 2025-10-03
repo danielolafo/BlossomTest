@@ -1,5 +1,9 @@
 package com.blossom.test.entity;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,9 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -45,10 +46,10 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order")
-    private Set<ProductOrder> orderProductOrders = new HashSet<>();
+    private List<ProductOrder> orderProductOrders = new ArrayList<>();
 
     @OneToMany(mappedBy = "order")
-    private Set<Payment> orderPayments = new HashSet<>();
+    private List<Payment> orderPayments = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -82,19 +83,19 @@ public class Order {
         this.user = user;
     }
 
-    public Set<ProductOrder> getOrderProductOrders() {
+    public List<ProductOrder> getOrderProductOrders() {
         return orderProductOrders;
     }
 
-    public void setOrderProductOrders(final Set<ProductOrder> orderProductOrders) {
+    public void setOrderProductOrders(final List<ProductOrder> orderProductOrders) {
         this.orderProductOrders = orderProductOrders;
     }
 
-    public Set<Payment> getOrderPayments() {
+    public List<Payment> getOrderPayments() {
         return orderPayments;
     }
 
-    public void setOrderPayments(final Set<Payment> orderPayments) {
+    public void setOrderPayments(final List<Payment> orderPayments) {
         this.orderPayments = orderPayments;
     }
 

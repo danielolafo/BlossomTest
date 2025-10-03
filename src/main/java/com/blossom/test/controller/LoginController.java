@@ -27,8 +27,8 @@ public class LoginController {
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<Object> signup(){
-		return null;
+	public ResponseEntity<LoginResponseDto> signup(@RequestBody LoginDto loginDto) throws InvalidUserException{
+		return this.loginService.signup(loginDto);
 	}
 
 }
