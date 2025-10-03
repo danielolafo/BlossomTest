@@ -12,7 +12,7 @@ import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.service.LoginService;
 
 @RestController
-@RequestMapping("/security")
+@RequestMapping("/auth")
 public class LoginController {
 	
 	private final LoginService loginService;
