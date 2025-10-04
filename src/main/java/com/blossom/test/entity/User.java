@@ -19,12 +19,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "\"User\"")
+@Table(name = "Users")
 @Builder
+@AllArgsConstructor
 public class User implements UserDetails{
 
     @Id
@@ -56,6 +59,8 @@ public class User implements UserDetails{
 
     @OneToMany(mappedBy = "user")
     private Set<Order> userOrders = new HashSet<>();
+    
+    public User() {}
 
     public Integer getId() {
         return id;

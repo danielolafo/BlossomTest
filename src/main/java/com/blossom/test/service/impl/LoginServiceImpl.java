@@ -43,7 +43,7 @@ public class LoginServiceImpl implements LoginService {
 		authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsername(),
-                        loginDto.getPassword()
+                        passwordEncoder.encode(loginDto.getPassword())
                 )
         );
 		Optional<User> userOpt = userRepository.findByUsername(loginDto.getUsername());
