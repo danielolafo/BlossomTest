@@ -5,13 +5,15 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import com.blossom.test.dto.OrderDto;
+import com.blossom.test.dto.OrderSearchRequestDto;
+import com.blossom.test.dto.ResponseWrapper;
 
 public interface OrderService {
 	
-	public ResponseEntity<OrderDto> create(OrderDto orderDto);
+	public ResponseEntity<ResponseWrapper<OrderDto>> create(OrderDto orderDto);
 	
 	public Double calculateTotal(OrderDto orderDto);
 	
-	public ResponseEntity<List<OrderDto>> getOrderHistory(Integer userId, String order);
+	public ResponseEntity<ResponseWrapper<List<OrderDto>>> getOrderHistory(OrderSearchRequestDto orderSearchRequestDto);
 
 }

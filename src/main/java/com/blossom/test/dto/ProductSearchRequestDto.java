@@ -1,5 +1,7 @@
 package com.blossom.test.dto;
 
+import java.util.Date;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,9 +11,14 @@ public class ProductSearchRequestDto {
 	
 	private String name;
 	private String category;
-	private Integer cateogryId;
+	private Integer categoryId;
 	private Integer minPrice;
 	private Integer maxPrice;
-	private String sortBy;
+	private Date date;
+	
+	@Builder.Default
+	private String sortBy = "price";
+	private Integer numPage;
+	private Integer pageSize;
 
 }

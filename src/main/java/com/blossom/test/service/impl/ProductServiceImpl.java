@@ -2,6 +2,7 @@ package com.blossom.test.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
+import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Product;
 import com.blossom.test.mapper.ProductMapper;
@@ -131,9 +133,22 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(PaginationRequestDto paginationRequestDto) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(ProductSearchRequestDto productSearchRequestDto) {
+		if(Objects.isNull(productSearchRequestDto.getSortBy())) {
+			productSearchRequestDto.setSortBy("price");
+		}
+		Pageable pageable = PageRequest.of(productSearchRequestDto.getNumPage(), productSearchRequestDto.getPageSize(), Sort.by(productSearchRequestDto.getSortBy()).descending());
+		List<ProductDto> lstProductDtos = new ArrayList<>();
+		Page<Product> pageProducts = this.repository.search(productSearchRequestDto, pageable);
+		pageProducts.toList().forEach(p -> ProductMapper.INSTANCE.toDto(p));
+		return new ResponseEntity<>(
+				ResponseWrapper.<List<ProductDto>>builder()
+				.data(lstProductDtos)
+				.message("Product list")
+				.numPage(0)
+				.totalPages(pageProducts.getTotalPages())
+				.build(),
+				!lstProductDtos.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
 }

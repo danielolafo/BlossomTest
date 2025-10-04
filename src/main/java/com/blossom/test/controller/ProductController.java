@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
+import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.service.ProductService;
 
@@ -56,14 +58,15 @@ public class ProductController {
 		return productService.getAll(paginationRequestDto);
 	}
 	
+	@GetMapping("/search")
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(
-			@RequestParam("numPage")Integer numPage,
-			@RequestParam("pageSize")Integer pageSize,
-			@RequestParam("orderBy")Integer orderBy,
-			@RequestParam("minPrice")Double minPrice,
-			@RequestParam("maxPrice")Double maxPrice,
-			PaginationRequestDto paginationRequestDto){
-		return this.productService.search(paginationRequestDto);
+			@RequestParam(name="numPage")Integer numPage,
+			@RequestParam(name="pageSize")Integer pageSize,
+			@RequestParam(name="sortBy", required=false)Integer sortBy,
+			@RequestParam(name="minPrice", required=false)Double minPrice,
+			@RequestParam(name="maxPrice", required=false)Double maxPrice,
+			@ModelAttribute ProductSearchRequestDto productSearchRequestDto){
+		return this.productService.search(productSearchRequestDto);
 	}
 
 }

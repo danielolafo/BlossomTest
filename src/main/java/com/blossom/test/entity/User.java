@@ -1,9 +1,8 @@
 package com.blossom.test.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,6 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -58,7 +56,7 @@ public class User implements UserDetails{
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private Set<Order> userOrders = new HashSet<>();
+    private List<Order> userOrders = new ArrayList<>();
     
     public User() {}
 
@@ -102,11 +100,11 @@ public class User implements UserDetails{
         this.role = role;
     }
 
-    public Set<Order> getUserOrders() {
+    public List<Order> getUserOrders() {
         return userOrders;
     }
 
-    public void setUserOrders(final Set<Order> userOrders) {
+    public void setUserOrders(final List<Order> userOrders) {
         this.userOrders = userOrders;
     }
 

@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -51,8 +53,11 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     
-    @Column(length = 500)
+    @Column(name="creation_date",length = 500)
     private Date date;
+    
+    @Column(length = 100)
+    private Double price;
 
     @OneToMany(mappedBy = "product")
     private Set<ProductOrder> productProductOrders = new HashSet<>();
@@ -80,6 +85,14 @@ public class Product {
     public void setDescription(final String description) {
         this.description = description;
     }
+    
+    public void setPricee(final Double price) {
+        this.price = price;
+    }
+    
+    public Double getPrice() {
+        return this.price;
+    }
 
     public Set<ProductOrder> getProductProductOrders() {
         return productProductOrders;
@@ -87,6 +100,16 @@ public class Product {
 
     public void setProductProductOrders(final Set<ProductOrder> productProductOrders) {
         this.productProductOrders = productProductOrders;
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+    	this.date = new Date();
+    }
+    
+    @PreUpdate
+    private void onUpdate() {
+    	this.date = new Date();
     }
 
 }

@@ -1,8 +1,10 @@
 package com.blossom.test.entity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.blossom.test.constants.EnumOrderStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -36,10 +39,10 @@ public class Order {
     private Integer id;
 
     @Column(nullable = false)
-    private LocalDate orderDate;
+    private Date orderDate;
 
     @Column(nullable = false)
-    private Boolean orderStatus;
+    private String orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -59,19 +62,19 @@ public class Order {
         this.id = id;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(final LocalDate orderDate) {
+    public void setOrderDate(final Date orderDate) {
         this.orderDate = orderDate;
     }
 
-    public Boolean getOrderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final Boolean orderStatus) {
+    public void setOrderStatus(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -97,6 +100,12 @@ public class Order {
 
     public void setOrderPayments(final List<Payment> orderPayments) {
         this.orderPayments = orderPayments;
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+    	this.orderDate = new Date();
+    	this.orderStatus = EnumOrderStatus.PENDING.getCode();
     }
 
 }

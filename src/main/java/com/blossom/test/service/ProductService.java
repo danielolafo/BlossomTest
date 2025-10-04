@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
+import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 
 public interface ProductService {
@@ -20,6 +21,6 @@ public interface ProductService {
 	
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> getAll(PaginationRequestDto paginationRequestDto);
 	
-	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(PaginationRequestDto paginationRequestDto);
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(ProductSearchRequestDto productSearchRequestDto);
 
 }
