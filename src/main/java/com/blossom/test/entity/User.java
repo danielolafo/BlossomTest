@@ -33,14 +33,14 @@ public class User implements UserDetails{
     @Id
     @Column(nullable = false, updatable = false)
     @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
+            name = "primary_sequence_usr",
+            sequenceName = "primary_sequence_usr",
             allocationSize = 1,
             initialValue = 10000
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
+            generator = "primary_sequence_usr"
     )
     private Integer id;
 

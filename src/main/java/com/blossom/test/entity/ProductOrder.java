@@ -9,22 +9,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 
 @Entity
+@Table(name="product_orders")
 public class ProductOrder {
 
     @Id
     @Column(nullable = false, updatable = false)
     @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
+            name = "primary_sequence_prod_ord",
+            sequenceName = "primary_sequence_prod_ord",
             allocationSize = 1,
-            initialValue = 10000
+            initialValue = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
+            generator = "primary_sequence_prod_ord"
     )
     private Integer id;
 

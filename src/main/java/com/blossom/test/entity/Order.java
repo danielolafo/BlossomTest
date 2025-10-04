@@ -24,14 +24,14 @@ public class Order {
     @Id
     @Column(nullable = false, updatable = false)
     @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
+            name = "primary_sequence_ord",
+            sequenceName = "primary_sequence_ord",
             allocationSize = 1,
-            initialValue = 10000
+            initialValue = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
+            generator = "primary_sequence_ord"
     )
     private Integer id;
 
