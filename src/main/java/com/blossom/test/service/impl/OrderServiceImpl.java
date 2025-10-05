@@ -48,6 +48,9 @@ public class OrderServiceImpl implements OrderService {
 		
 		Order newOrder = this.repository.save(OrderMapper.INSTANCE.toEntity(orderDto));
 		orderDto = OrderMapper.INSTANCE.toDto(newOrder);
+		
+		//Creates the records on ProductOrders
+		this.productOrderService.create(orderDto);
 		return new ResponseEntity<>(
 				ResponseWrapper.<OrderDto>builder()
 				.data(orderDto)
@@ -72,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 		
 		Double total =0.0;
 		total = lstProductsOrderResp.getBody().getData().stream()
-				.mapToDouble(p->p.getQuantity() * mapPrices.get(p.getId()))
+				.mapToDouble(p->p.getQuantity() * mapPrices.get(p.getProductId()))
 				.reduce((tot, curr)-> curr)
 				.getAsDouble();
 		return total;//orderOpt.get().getOrderProductOrders().stream().mapToDouble(o -> o.getQuantity() * o.getProduct().getPrice()).sum();

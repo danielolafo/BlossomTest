@@ -32,6 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	//The same query as above but no fetch ALL records
 	@Query("SELECT p FROM Product p JOIN p.productProductOrders po ON p.id = po.product.id WHERE po.order.id = :orderId")
+	//@Query(value="SELECT p.* FROM Products p JOIN Product_Orders po ON p.id = po.order_id WHERE po.order_id = :orderId", nativeQuery=true)
 	public List<Product> findAllByOrderId(@Param("orderId") Integer orderId);
 
 }

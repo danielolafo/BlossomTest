@@ -12,7 +12,7 @@ import com.blossom.test.entity.ProductOrderProj;
 @Repository
 public interface ProductOrderRepository extends JpaRepository<ProductOrder, Integer> {
 	
-	@Query("SELECT po.order.id, p.id, po.quantity, p.price FROM Product p JOIN p.productProductOrders po ON p.id = po.product.id WHERE po.order.id = :orderId")
+	@Query("SELECT po.order.id AS orderId, p.id AS productId, po.quantity AS quantity, p.price AS price FROM Product p JOIN p.productProductOrders po ON p.id = po.product.id WHERE po.order.id = :orderId")
 	public List<ProductOrderProj> findByOrderId(Integer orderId);
 
 }

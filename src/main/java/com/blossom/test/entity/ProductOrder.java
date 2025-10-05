@@ -10,10 +10,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name="product_orders")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductOrder {
 
     @Id
@@ -31,7 +37,7 @@ public class ProductOrder {
     private Integer id;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Double quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -49,11 +55,11 @@ public class ProductOrder {
         this.id = id;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final Integer quantity) {
+    public void setQuantity(final Double quantity) {
         this.quantity = quantity;
     }
 
