@@ -39,7 +39,7 @@ public class SecurityConfiguration {
         		.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                  )
         		;
         return http.build();

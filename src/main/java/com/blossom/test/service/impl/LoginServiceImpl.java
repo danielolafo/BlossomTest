@@ -42,7 +42,8 @@ public class LoginServiceImpl implements LoginService {
 		authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsername(),
-                        passwordEncoder.encode(loginDto.getPassword())
+//                        passwordEncoder.encode(loginDto.getPassword())
+                        loginDto.getPassword()
                 )
         );
 		Optional<User> userOpt = userRepository.findByUsername(loginDto.getUsername());
