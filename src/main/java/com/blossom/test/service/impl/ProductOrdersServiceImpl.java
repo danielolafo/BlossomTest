@@ -16,7 +16,6 @@ import com.blossom.test.entity.Order;
 import com.blossom.test.entity.Product;
 import com.blossom.test.entity.ProductOrder;
 import com.blossom.test.entity.ProductOrderProj;
-import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.ProductOrderRepository;
 import com.blossom.test.service.ProductOrdersService;
 

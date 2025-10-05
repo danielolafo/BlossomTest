@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
 				.numPage(0)
 				.totalPages(pageProducts.getTotalPages())
 				.build(),
-				HttpStatus.OK);
+				!lstProductsDto.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
 	@Override
