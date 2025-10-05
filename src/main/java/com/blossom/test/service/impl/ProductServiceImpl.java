@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 		Pageable pageable = PageRequest.of(productSearchRequestDto.getNumPage(), productSearchRequestDto.getPageSize(), Sort.by(productSearchRequestDto.getSortBy()).descending());
 		List<ProductDto> lstProductDtos = new ArrayList<>();
 		Page<Product> pageProducts = this.repository.search(productSearchRequestDto, pageable);
-		pageProducts.toList().forEach(p -> ProductMapper.INSTANCE.toDto(p));
+		pageProducts.toList().forEach(p -> lstProductDtos.add(ProductMapper.INSTANCE.toDto(p)));
 		return new ResponseEntity<>(
 				ResponseWrapper.<List<ProductDto>>builder()
 				.data(lstProductDtos)
