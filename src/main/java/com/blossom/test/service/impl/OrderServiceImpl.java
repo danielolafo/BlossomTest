@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
 		Double total =0.0;
 		total = lstProductsOrderResp.getBody().getData().stream()
 				.mapToDouble(p->p.getQuantity() * mapPrices.get(p.getProductId()))
-				.reduce((tot, curr)-> curr)
+				.reduce((tot, curr)-> curr+tot)
 				.getAsDouble();
 		return total;//orderOpt.get().getOrderProductOrders().stream().mapToDouble(o -> o.getQuantity() * o.getProduct().getPrice()).sum();
 	}
