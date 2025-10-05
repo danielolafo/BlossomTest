@@ -1,7 +1,6 @@
 package com.blossom.test.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -23,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
+import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Category;
 import com.blossom.test.entity.Product;
@@ -77,7 +77,7 @@ class ProductServiceImplTest {
 		when(repository.findById(anyInt())).thenReturn(Optional.of(product));
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.update(productDto);
 		assertTrue(resp.hasBody());
-		assertTrue(resp.getStatusCode().is4xxClientError());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	
 
@@ -101,7 +101,7 @@ class ProductServiceImplTest {
 	
 	@Test
 	void deleteNotFound() {
-		when(repository.findById(anyInt())).thenReturn(Optional.of(product));
+		when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(null));
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.delete(1);
 		assertTrue(resp.hasBody());
 		assertTrue(resp.getStatusCode().is4xxClientError());
@@ -119,7 +119,7 @@ class ProductServiceImplTest {
 	
 	@Test
 	void getByIdNotFound() {
-		when(repository.findById(anyInt())).thenReturn(Optional.of(product));
+		when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(null));
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.getById(1);
 		assertTrue(resp.hasBody());
 		assertTrue(resp.getStatusCode().is4xxClientError());
@@ -155,43 +155,64 @@ class ProductServiceImplTest {
 	
 	@Test
 	void searchOk() {
-		fail("Not yet implemented");
+		ProductSearchRequestDto productSearchRequestDto = ProductSearchRequestDto.builder().numPage(0).pageSize(10).build();
+		when(repository.search(any(ProductSearchRequestDto.class),any(Pageable.class))).thenReturn(new PageImpl<>(productList));
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.search(productSearchRequestDto);
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	
 	
 	@Test
 	void searchNoResults() {
-		fail("Not yet implemented");
+		ProductSearchRequestDto productSearchRequestDto = ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build();
+		when(repository.search(any(ProductSearchRequestDto.class),any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.search(productSearchRequestDto);
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is4xxClientError());
 	}
 	
 	
 	@Test
 	void findByOrderIdOk() {
-		fail("Not yet implemented");
+		when(repository.findByOrderId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+		productServiceImpl.findByOrderId(ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build());
 	}
 	
 	
 	@Test
 	void findPageByOrderIdOk() {
-		fail("Not yet implemented");
+		when(repository.findByOrderId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<>(productList));
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.findPageByOrderId(ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	
 	
 	@Test
 	void findPageByOrderIdNotFound() {
-		fail("Not yet implemented");
+		when(repository.findByOrderId(anyInt(), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.findPageByOrderId(ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is4xxClientError());
 	}
 	
 	
 	@Test
 	void findAllByOrderIdOk() {
-		fail("Not yet implemented");
+		when(repository.findAllByOrderId(anyInt())).thenReturn(productList);
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.findAllByOrderId(ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	
 	
 	@Test
 	void findAllByOrderIdNotFound() {
-		fail("Not yet implemented");
+		when(repository.findAllByOrderId(anyInt())).thenReturn(new ArrayList<>());
+		ResponseEntity<ResponseWrapper<List<ProductDto>>> resp = productServiceImpl.findAllByOrderId(ProductSearchRequestDto.builder().numPage(0).pageSize(10).orderId(1).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is4xxClientError());
 	}
 
 }

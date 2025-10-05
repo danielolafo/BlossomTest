@@ -1,6 +1,7 @@
 package com.blossom.test.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,9 +17,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import com.blossom.test.dto.OrderDto;
+import com.blossom.test.dto.ProductDto;
 import com.blossom.test.dto.ProductOrderDto;
 import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
+import com.blossom.test.entity.Order;
+import com.blossom.test.entity.Product;
+import com.blossom.test.entity.ProductOrder;
 import com.blossom.test.entity.ProductOrderProj;
 import com.blossom.test.repository.ProductOrderRepository;
 
@@ -32,6 +38,9 @@ class ProductOrderServiceImplTest {
 	private ProductOrderRepository repository;
 	
 	private List<ProductOrderProj> lstProductOrderProj;
+	
+	private OrderDto orderDto;
+	List<ProductDto> lstProductsDtos;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -49,6 +58,15 @@ class ProductOrderServiceImplTest {
 		prodOrdProj2.setProductId(2);
 		prodOrdProj2.setQuatity(2.0);
 		lstProductOrderProj.add(prodOrdProj2);
+		
+		Integer productId=0;
+		Integer productOrderId=0;
+		
+		lstProductsDtos = new ArrayList<>();
+		lstProductsDtos.add(ProductDto.builder().id(++productId).price(20.0).build());
+		lstProductsDtos.add(ProductDto.builder().id(++productId).price(45.0).build());
+		
+		orderDto = OrderDto.builder().id(1).lstProducts(lstProductsDtos).build();
 	}
 
 	@Test
@@ -69,7 +87,25 @@ class ProductOrderServiceImplTest {
 	
 	@Test
 	void createOk() {
-		
+		ProductOrder pr = ProductOrder.builder()
+				.id(1)
+				.order(Order.builder().id(1).build())
+				.product(Product.builder().id(1).build())
+				.build();
+		when(repository.save(any(ProductOrder.class))).thenReturn(pr);
+		ResponseEntity<ResponseWrapper<List<ProductOrderDto>>> resp = productOrdersServiceImpl.create(orderDto);
+		assertTrue(resp.hasBody());
+		assertTrue(!resp.getBody().getData().isEmpty());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
+	}
+	
+	@Test
+	void createError() {
+		//when(repository.save(any(ProductOrder.class))).thenReturn(null);
+		ResponseEntity<ResponseWrapper<List<ProductOrderDto>>> resp = productOrdersServiceImpl.create(orderDto);
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getBody().getData().isEmpty());
+		assertTrue(resp.getStatusCode().is4xxClientError());
 	}
 
 }

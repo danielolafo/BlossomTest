@@ -52,15 +52,39 @@ public class ProductOrdersServiceImpl implements ProductOrdersService {
 
 	@Override
 	public ResponseEntity<ResponseWrapper<List<ProductOrderDto>>> create(OrderDto orderDto) {
-		for(ProductDto productDto : orderDto.getLstProducts()) {
-			this.repository.save(ProductOrder
-					.builder()
-					.order(Order.builder().id(orderDto.getId()).build())
-					.product(Product.builder().id(productDto.getId()).build())
-					.quantity(1.0)
-					.build());
+		try {
+			List<ProductOrderDto> lstProductOrderDtos = new ArrayList<>();
+			for(ProductDto productDto : orderDto.getLstProducts()) {
+				ProductOrder savedProductOrder = this.repository.save(ProductOrder
+						.builder()
+						.order(Order.builder().id(orderDto.getId()).build())
+						.product(Product.builder().id(productDto.getId()).build())
+						.quantity(1.0)
+						.build());
+				lstProductOrderDtos.add(ProductOrderDto
+						.builder()
+						.id(savedProductOrder.getId())
+						.orderId(orderDto.getId())
+						.productId(savedProductOrder.getId())
+						.build());
+				productDto.setId(savedProductOrder.getId());
+			}
+			return new ResponseEntity<>(
+					ResponseWrapper.<List<ProductOrderDto>>builder()
+					.data(lstProductOrderDtos)
+					.message("Products from order")
+					.isSuccess(true)
+					.build(),
+					HttpStatus.OK);
+		}catch(Exception ex) {
+			return new ResponseEntity<>(
+					ResponseWrapper.<List<ProductOrderDto>>builder()
+					.data(new ArrayList<>())
+					.message("Products from order")
+					.isSuccess(false)
+					.build(),
+					HttpStatus.BAD_REQUEST);
 		}
-		return null;
 	}
 
 }

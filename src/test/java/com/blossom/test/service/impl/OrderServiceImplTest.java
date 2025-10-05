@@ -1,6 +1,7 @@
 package com.blossom.test.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,10 +21,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.blossom.test.dto.OrderDto;
+import com.blossom.test.dto.OrderSearchRequestDto;
 import com.blossom.test.dto.ProductDto;
 import com.blossom.test.dto.ProductOrderDto;
 import com.blossom.test.dto.ProductSearchRequestDto;
@@ -117,7 +121,26 @@ class OrderServiceImplTest {
 	
 	@Test
 	void getOrderHistoryOk() {
-		
+		Order order = OrderMapper.INSTANCE.toEntity(orderDto);
+		List<Order> lstOrders = new ArrayList<>();
+		lstOrders.add(order);
+		when(repository.getHistory(any(OrderSearchRequestDto.class), any(Pageable.class))).thenReturn(new PageImpl<>(lstOrders));
+		ResponseEntity<ResponseWrapper<List<OrderDto>>> resp = orderServiceImpl.getOrderHistory(OrderSearchRequestDto.builder().userId(1).numPage(0).pageSize(10).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is2xxSuccessful());
+		assertFalse(resp.getBody().getData().isEmpty());
+	}
+	
+	@Test
+	void getOrderHistoryNoResults() {
+		Order order = OrderMapper.INSTANCE.toEntity(orderDto);
+		List<Order> lstOrders = new ArrayList<>();
+		lstOrders.add(order);
+		when(repository.getHistory(any(OrderSearchRequestDto.class), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+		ResponseEntity<ResponseWrapper<List<OrderDto>>> resp = orderServiceImpl.getOrderHistory(OrderSearchRequestDto.builder().userId(1).numPage(0).pageSize(10).build());
+		assertTrue(resp.hasBody());
+		assertTrue(resp.getStatusCode().is4xxClientError());
+		assertTrue(resp.getBody().getData().isEmpty());
 	}
 
 }
