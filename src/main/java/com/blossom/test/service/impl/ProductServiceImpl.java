@@ -151,4 +151,45 @@ public class ProductServiceImpl implements ProductService {
 				!lstProductDtos.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
+	@Override
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> findByOrderId(ProductSearchRequestDto productSearchRequestDto) {
+		if(Objects.nonNull(productSearchRequestDto.getNumPage()) && Objects.nonNull(productSearchRequestDto.getPageSize())) {
+			return this.findPageByOrderId(productSearchRequestDto);
+		}else {
+			return this.findAllByOrderId(productSearchRequestDto);
+		}
+		
+	}
+	
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> findPageByOrderId(ProductSearchRequestDto productSearchRequestDto) {
+		Page<Product> pageProducts = null;
+		PageRequest page = PageRequest.of(productSearchRequestDto.getNumPage(), productSearchRequestDto.getPageSize());
+		pageProducts = this.repository.findByOrderId(productSearchRequestDto.getOrderId(), page);
+		
+		List<ProductDto> lstProductDtos = new ArrayList<>();
+		pageProducts.toList().forEach(p -> lstProductDtos.add(ProductMapper.INSTANCE.toDto(p)));
+		return new ResponseEntity<>(
+				ResponseWrapper.<List<ProductDto>>builder()
+				.data(lstProductDtos)
+				.message("Product list")
+				.numPage(0)
+				.totalPages(pageProducts.getTotalPages())
+				.build(),
+				!lstProductDtos.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+	}
+	
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> findAllByOrderId(ProductSearchRequestDto productSearchRequestDto) {
+		List<Product> lstProducts = this.repository.findAllByOrderId(productSearchRequestDto.getOrderId());
+		
+		List<ProductDto> lstProductDtos = new ArrayList<>();
+		lstProducts.forEach(p -> lstProductDtos.add(ProductMapper.INSTANCE.toDto(p)));
+		return new ResponseEntity<>(
+				ResponseWrapper.<List<ProductDto>>builder()
+				.data(lstProductDtos)
+				.message("Product list")
+				.numPage(0)
+				.build(),
+				!lstProductDtos.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+	}
+
 }

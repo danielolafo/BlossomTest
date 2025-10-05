@@ -6,21 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto {
+@Data
+public class ProductOrderDto {
 	
-	 private Integer id;
+	private Integer id;
 
-	 private String name;
+    private Double quantity;
 
-	 private String description;
-	 
-	 private Integer categoryId;
-	 
-	 private Double price;
+    private Integer orderId;
+
+    private Integer productId;
 
 }

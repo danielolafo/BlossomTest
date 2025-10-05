@@ -15,6 +15,8 @@ public class ProductSearchRequestDto {
 	private Integer minPrice;
 	private Integer maxPrice;
 	private Date date;
+	private Integer userId;
+	private Integer orderId;
 	
 	@Builder.Default
 	private String sortBy = "price";

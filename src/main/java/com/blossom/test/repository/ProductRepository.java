@@ -25,5 +25,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 			AND p.date = COALESCE(:#{#req.date}, p.date)
 			""")
 	public Page<Product> search(@Param("req") ProductSearchRequestDto req, Pageable pageable);
+	
+	
+	@Query("SELECT p FROM Product p JOIN p.productProductOrders po ON p.id = po.product.id WHERE po.order.id = :orderId")
+	public Page<Product> findByOrderId(Integer orderId, Pageable pageable);
+	
+	//The same query as above but no fetch ALL records
+	@Query("SELECT p FROM Product p JOIN p.productProductOrders po ON p.id = po.product.id WHERE po.order.id = :orderId")
+	public List<Product> findAllByOrderId(@Param("orderId") Integer orderId);
 
 }

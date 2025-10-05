@@ -22,5 +22,7 @@ public interface ProductService {
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> getAll(PaginationRequestDto paginationRequestDto);
 	
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(ProductSearchRequestDto productSearchRequestDto);
+	
+	public ResponseEntity<ResponseWrapper<List<ProductDto>>> findByOrderId(ProductSearchRequestDto productSearchRequestDto);
 
 }
