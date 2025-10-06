@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -38,11 +40,13 @@ import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Order;
 import com.blossom.test.entity.Product;
 import com.blossom.test.entity.User;
+import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.mapper.OrderMapper;
 import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.OrderRepository;
 import com.blossom.test.service.ProductOrdersService;
 import com.blossom.test.service.ProductService;
+import com.blossom.test.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
@@ -59,6 +63,12 @@ class OrderServiceImplTest {
 	@Mock
 	private ProductService productService;
 	
+	@Mock
+	private JwtService jwtService;
+	
+	@Mock
+	private UserService userService;
+	
 	private Order order;
 	private OrderDto orderDto;
 	private User user;
@@ -68,9 +78,12 @@ class OrderServiceImplTest {
 	ResponseEntity<ResponseWrapper<List<ProductOrderDto>>> lstProductsOrderResp;
 	
 	MockHttpServletRequest request = new MockHttpServletRequest();
+	UserDetails userDet;
 
 	@BeforeEach
 	void setUp() throws Exception {
+		userDet = new User();
+		userDet = User.builder().id(1).username("username").build();
 		// prepare
         request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer token");
@@ -101,7 +114,9 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	void createOk() {
+	void createOk() throws InvalidUserException {
+		when(jwtService.extractUsername(anyString())).thenReturn("user");
+		when(userService.findByUsername(anyString())).thenReturn((User) userDet);
 		when(repository.save(any(Order.class))).thenReturn(order);
 		ResponseEntity<ResponseWrapper<OrderDto>> resp = orderServiceImpl.create(OrderMapper.INSTANCE.toDto(order));
 		assertTrue(resp.hasBody());
