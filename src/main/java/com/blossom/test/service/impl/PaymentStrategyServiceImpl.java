@@ -27,7 +27,7 @@ public class PaymentStrategyServiceImpl {
 	
 	public ResponseEntity<ResponseWrapper<PaymentDto>> pay(PaymentDto paymentDto){
 		try {
-			this.mapPayments.get(TableConstants.BASE_PAYMENT).pay(paymentDto);
+			//this.mapPayments.get(TableConstants.BASE_PAYMENT).pay(paymentDto);
 			
 			//Strategy pattern
 			return mapPayments.get(paymentDto.getPaymentMethod()).pay(paymentDto);

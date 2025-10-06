@@ -4,11 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.blossom.test.constants.EnumOrderStatus;
 import com.blossom.test.constants.TableConstants;
 import com.blossom.test.dto.CashPaymentDto;
 import com.blossom.test.dto.PaymentDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.CashPayment;
+import com.blossom.test.entity.Order;
 import com.blossom.test.mapper.CashPaymentMapper;
 import com.blossom.test.repository.CashPaymentRepository;
 import com.blossom.test.service.PaymentService;
@@ -26,7 +28,11 @@ public class PaymentCashServiceImpl implements PaymentService {
 	public ResponseEntity<ResponseWrapper<PaymentDto>> pay(PaymentDto paymentDto) {
 		ResponseEntity<ResponseWrapper<PaymentDto>> resp;
 		CashPaymentDto cashPaymentDto = CashPaymentDto.builder().paymentId(paymentDto.getId()).build();
-		CashPayment cashPayment = this.repository.save(CashPaymentMapper.INSTANCE.toEntity(cashPaymentDto));
+		CashPayment cashPayment = CashPaymentMapper.INSTANCE.toEntity(cashPaymentDto);
+		cashPayment.setTotal(paymentDto.getTotal());
+		cashPayment.setPaymentStatus(EnumOrderStatus.PAID.getCode());
+		cashPayment.setOrder(Order.builder().id(paymentDto.getOrderId()).build());
+		cashPayment = this.repository.save(cashPayment);
 		resp = new ResponseEntity<>(
 				ResponseWrapper.<PaymentDto>builder()
 				.data(null)
