@@ -12,6 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
@@ -22,17 +25,27 @@ import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.ProductRepository;
 import com.blossom.test.service.ProductService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 	
 	private final ProductRepository repository;
+	private final JwtService jwtService;
 	
-	public ProductServiceImpl(ProductRepository repository) {
+	public ProductServiceImpl(
+			ProductRepository repository,
+			JwtService jwtService) {
 		this.repository = repository;
+		this.jwtService = jwtService;
 	}
 
 	@Override
 	public ResponseEntity<ResponseWrapper<ProductDto>> create(ProductDto productDto) {
+		HttpServletRequest request =  ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		String jwt = request.getHeader("Authorization");
+		String username = this.jwtService.extractUsername(jwt.split(" ")[1]);
+		
 		List<Product> productList = this.repository.findByNameIgnoreCase(productDto.getName());
 		if(!productList.isEmpty()) {
 			return new ResponseEntity<>(
