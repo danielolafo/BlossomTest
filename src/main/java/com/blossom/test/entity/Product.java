@@ -1,7 +1,9 @@
 package com.blossom.test.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -11,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -63,6 +66,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private Set<ProductOrder> productProductOrders = new HashSet<>();
+    
+    @ManyToMany(mappedBy = "products")
+    private List<Order> lstOrders = new ArrayList<>();
 
     public Integer getId() {
         return id;

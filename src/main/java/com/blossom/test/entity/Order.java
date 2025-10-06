@@ -13,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -59,6 +61,14 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<Payment> orderPayments = new ArrayList<>();
+    
+    @ManyToMany()
+    @JoinTable(
+            name = "ProductOrder", 
+            joinColumns = { @JoinColumn(name = "order_id") }, 
+            inverseJoinColumns = { @JoinColumn(name = "product_id") }
+    )
+    private List<Product> products = new ArrayList<>();
 
     public Integer getId() {
         return id;
