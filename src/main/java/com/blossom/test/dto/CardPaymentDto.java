@@ -8,22 +8,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class PaymentDto {
-
+public class CardPaymentDto {
+	
 	private Integer id;
 
-    private BigDecimal total;
+    private BigDecimal paymentFee;
 
-    private Boolean paymentStatus;
+    private Boolean status;
 
     private Date paymentDate;
 
-    private Integer orderId;
-    
-    private String paymentMethod;
-	
+    private Integer paymentId;
+
 }

@@ -8,15 +8,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blossom.test.dto.PaymentDto;
 import com.blossom.test.dto.ResponseWrapper;
+import com.blossom.test.service.impl.PaymentStrategyServiceImpl;
 
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
 	
+	private final PaymentStrategyServiceImpl paymentStrategyServiceImpl;
+	
+	public PaymentController(PaymentStrategyServiceImpl paymentStrategyServiceImpl) {
+		this.paymentStrategyServiceImpl = paymentStrategyServiceImpl;
+	}
+	
 	@PostMapping("/{orderId}")
-	public ResponseEntity<ResponseWrapper> payOrder(@RequestBody PaymentDto paymentDto){
+	public ResponseEntity<ResponseWrapper<PaymentDto>> payOrder(@RequestBody PaymentDto paymentDto){
 		
-		return null;
+		return paymentStrategyServiceImpl.pay(paymentDto);
 	}
 
 }
