@@ -25,6 +25,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.blossom.test.dto.OrderDto;
 import com.blossom.test.dto.OrderSearchRequestDto;
@@ -63,9 +66,16 @@ class OrderServiceImplTest {
 	List<ProductOrderDto> lstProductOrderDtos;
 	
 	ResponseEntity<ResponseWrapper<List<ProductOrderDto>>> lstProductsOrderResp;
+	
+	MockHttpServletRequest request = new MockHttpServletRequest();
 
 	@BeforeEach
 	void setUp() throws Exception {
+		// prepare
+        request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer token");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+		
 		Integer userId=1;
 		Integer orderId=1;
 		Integer productId=0;

@@ -19,6 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.blossom.test.dto.PaginationRequestDto;
 import com.blossom.test.dto.ProductDto;
@@ -26,8 +30,11 @@ import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Category;
 import com.blossom.test.entity.Product;
+import com.blossom.test.entity.User;
+import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.ProductRepository;
+import com.blossom.test.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
@@ -38,9 +45,19 @@ class ProductServiceImplTest {
 	@Mock
 	private ProductRepository repository;
 	
+	@Mock
+	private JwtService jwtService;
+	
+	@Mock
+	private UserService userService;
+
+	
 	List<Product> productList;
 	Product product;
 	ProductDto productDto;
+	UserDetails user;
+	
+	MockHttpServletRequest request = new MockHttpServletRequest();
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -53,10 +70,21 @@ class ProductServiceImplTest {
 		product = Product.builder().id(++productId).category(category).price(123.0).name("Product name").build();
 		productList.add(product);
 		productDto = ProductMapper.INSTANCE.toDto(product);
+		
+		user = new User();
+		user = User.builder().id(1).username("username").build();
+		
+		// prepare
+        request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer token");
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
 	}
 
 	@Test
-	void createOk() {
+	void createOk() throws InvalidUserException {
+		when(jwtService.extractUsername(anyString())).thenReturn("user");
+		when(userService.findByUsername(anyString())).thenReturn((User) user);
 		when(repository.findByNameIgnoreCase(anyString())).thenReturn(new ArrayList<>());
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.create(productDto);
 		assertTrue(resp.hasBody());
