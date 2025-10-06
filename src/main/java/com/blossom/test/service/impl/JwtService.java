@@ -60,7 +60,8 @@ public class JwtService {
     	}
     	Role role = this.roleService.getRolesById(user.getRole().getId());
     	Map<String, Object> claims = new HashMap<>();
-    	claims.put("roles", List.of(role.getName()));
+    	roles.add(role.getName());
+    	claims.put("roles", roles);
         return generateToken(claims, userDetails);
     }
 
