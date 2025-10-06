@@ -56,7 +56,7 @@ public class LoginServiceImpl implements LoginService {
 		
 		User user = this.authenticate(loginDto);
 		String token = jwtService.generateToken(user);
-		LoginResponseDto loginResponseDto = LoginResponseDto.builder().token(token).build();
+		LoginResponseDto loginResponseDto = LoginResponseDto.builder().token(token).username(loginDto.getUsername()).build();
 		return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
 	}
 	
