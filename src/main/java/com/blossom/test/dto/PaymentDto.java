@@ -23,5 +23,7 @@ public class PaymentDto {
     private LocalDate paymentDate;
 
     private Integer orderId;
+    
+    private String paymentMethod;
 	
 }

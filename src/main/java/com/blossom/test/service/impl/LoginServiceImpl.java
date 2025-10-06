@@ -1,11 +1,14 @@
 package com.blossom.test.service.impl;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,10 +61,12 @@ public class LoginServiceImpl implements LoginService {
 	}
 	
 	 public User authenticate(LoginDto loginDto) {
-	        authenticationManager.authenticate(
+
+		 authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(
 	            		loginDto.getUsername(),
-	            		loginDto.getPassword()
+	            		loginDto.getPassword(),
+	            		this.getAuthority(null)
 	            )
 	        );
 
@@ -85,5 +90,16 @@ public class LoginServiceImpl implements LoginService {
 		userRepository.save(newUser);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	private Set<SimpleGrantedAuthority> getAuthority(User user) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        Role role = new Role();
+        role.setName("ADMIN");
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+//        user.getRoles().forEach(role -> {
+//            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+//        });
+        return authorities;
+    }
 
 }
