@@ -34,7 +34,7 @@ public class CashPayment extends Payment{
 //    private Integer id;
 
 //    @Column(nullable = false)
-    private Boolean status;
+//    private Boolean status;
 
 //    @Column(nullable = false)
     private Date paymentDate;
@@ -51,13 +51,13 @@ public class CashPayment extends Payment{
 //        this.id = id;
 //    }
 
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(final Boolean status) {
-        this.status = status;
-    }
+//    public Boolean getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(final Boolean status) {
+//        this.status = status;
+//    }
 
     public Date getPaymentDate() {
         return paymentDate;

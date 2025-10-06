@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.blossom.test.constants.EnumOrderStatus;
 import com.blossom.test.constants.TableConstants;
 import com.blossom.test.dto.PaymentDto;
 import com.blossom.test.dto.ResponseWrapper;
@@ -27,6 +28,7 @@ public class PaymentServiceImpl implements PaymentService {
 		ResponseEntity<ResponseWrapper<PaymentDto>> resp;
 		try {
 			Payment payment = PaymentMapper.INSTANCE.toEntity(paymentDto);
+			payment.setPaymentStatus(EnumOrderStatus.PAID.getCode());
 			payment = this.repository.save(payment);
 			paymentDto = PaymentMapper.INSTANCE.toDto(payment);
 			resp = new ResponseEntity<>(

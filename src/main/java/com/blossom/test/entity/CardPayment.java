@@ -39,7 +39,7 @@ public class CardPayment extends Payment{
     private BigDecimal paymentFee;
 
     //@Column(nullable = false)
-    private Boolean status;
+//    private Boolean status;
 
     //@Column(nullable = false)
     private Date paymentDate;
@@ -64,13 +64,13 @@ public class CardPayment extends Payment{
         this.paymentFee = paymentFee;
     }
 
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(final Boolean status) {
-        this.status = status;
-    }
+//    public Boolean getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(final Boolean status) {
+//        this.status = status;
+//    }
 
     public Date getPaymentDate() {
         return paymentDate;

@@ -45,7 +45,7 @@ public class Payment {
     private BigDecimal total;
 
     @Column(nullable = false)
-    private Boolean paymentStatus;
+    private String paymentStatus;
 
     @Column
     private Date paymentDate;
@@ -70,11 +70,11 @@ public class Payment {
         this.total = total;
     }
 
-    public Boolean getPaymentStatus() {
+    public String getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(final Boolean paymentStatus) {
+    public void setPaymentStatus(final String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
