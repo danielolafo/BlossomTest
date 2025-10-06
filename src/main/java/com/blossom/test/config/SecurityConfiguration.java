@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         //.requestMatchers("/product/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**","/swagger-resources/*","/v3/api-docs/**","/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                  )
         		;
