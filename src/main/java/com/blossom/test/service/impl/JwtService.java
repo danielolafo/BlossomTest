@@ -1,14 +1,21 @@
 package com.blossom.test.service.impl;
 
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.blossom.test.entity.Role;
+import com.blossom.test.entity.User;
+import com.blossom.test.service.RoleService;
+import com.blossom.test.service.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +30,16 @@ public class JwtService {
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
+    
+    private UserService userService;
+    private RoleService roleService;
+    
+    public JwtService(
+    		UserService userService,
+    		RoleService roleService) {
+    	this.userService = userService;
+    	this.roleService = roleService;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,7 +51,17 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    	List<String> roles = new ArrayList<>();
+    	User user = User.builder().build();
+    	try {
+    		user = this.userService.findByUsername(userDetails.getUsername());
+    	}catch(Exception ex) {
+    		
+    	}
+    	Role role = this.roleService.getRolesById(user.getRole().getId());
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("claims", List.of(role.getName()));
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
