@@ -37,7 +37,7 @@ public class PaymentStrategyServiceImpl {
 					.data(PaymentDto.builder().build())
 					.message("Invalid payment method")
 					.build(),
-					HttpStatus.OK);
+					HttpStatus.CONFLICT);
 			return resp;
 		}
 	}
