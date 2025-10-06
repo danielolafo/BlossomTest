@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.blossom.test.dto.OrderDto;
 import com.blossom.test.dto.OrderSearchRequestDto;
@@ -19,11 +21,15 @@ import com.blossom.test.dto.ProductOrderDto;
 import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Order;
+import com.blossom.test.entity.User;
 import com.blossom.test.mapper.OrderMapper;
 import com.blossom.test.repository.OrderRepository;
 import com.blossom.test.service.OrderService;
 import com.blossom.test.service.ProductOrdersService;
 import com.blossom.test.service.ProductService;
+import com.blossom.test.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -34,29 +40,51 @@ public class OrderServiceImpl implements OrderService {
 	
 	private final ProductService productService;
 	
+	private final JwtService jwtService;
+	private final UserService userService;
+	
 	public OrderServiceImpl(
 			OrderRepository repository,
 			ProductOrdersService productOrderService,
-			ProductService productService) {
+			ProductService productService,
+			JwtService jwtService,
+			UserService userService) {
 		this.repository = repository;
 		this.productOrderService = productOrderService;
 		this.productService = productService;
+		this.jwtService = jwtService;
+		this.userService= userService;
 	}
 
 	@Override
 	public ResponseEntity<ResponseWrapper<OrderDto>> create(OrderDto orderDto) {
 		
-		Order newOrder = this.repository.save(OrderMapper.INSTANCE.toEntity(orderDto));
-		orderDto = OrderMapper.INSTANCE.toDto(newOrder);
-		
-		//Creates the records on ProductOrders
-		this.productOrderService.create(orderDto);
-		return new ResponseEntity<>(
-				ResponseWrapper.<OrderDto>builder()
-				.data(orderDto)
-				.message("Order created")
-				.build(),
-				HttpStatus.CREATED);
+		try {
+			HttpServletRequest request =  ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+			String jwt = request.getHeader("Authorization");
+			String username = this.jwtService.extractUsername(jwt.split(" ")[1]);
+			User user = this.userService.findByUsername(username);
+			orderDto.setUserId(user.getId());
+			
+			Order newOrder = this.repository.save(OrderMapper.INSTANCE.toEntity(orderDto));
+			orderDto = OrderMapper.INSTANCE.toDto(newOrder);
+			
+			//Creates the records on ProductOrders
+			this.productOrderService.create(orderDto);
+			return new ResponseEntity<>(
+					ResponseWrapper.<OrderDto>builder()
+					.data(orderDto)
+					.message("Order created")
+					.build(),
+					HttpStatus.CREATED);
+		}catch(Exception ex) {
+			return new ResponseEntity<>(
+					ResponseWrapper.<OrderDto>builder()
+					.data(OrderDto.builder().build())
+					.message("The user is invalid")
+					.build(),
+					HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@Override
