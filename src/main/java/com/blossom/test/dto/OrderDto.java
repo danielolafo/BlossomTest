@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.blossom.test.entity.Payment;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +25,7 @@ public class OrderDto {
 
     private List<ProductDto> lstProducts;
 
-    private List<Payment> orderPayments = new ArrayList<>();
+    private List<PaymentDto> orderPayments = new ArrayList<>();
     
     private Double totalCost;
 	
