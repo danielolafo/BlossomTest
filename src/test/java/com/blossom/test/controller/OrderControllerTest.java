@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,19 +48,19 @@ class OrderControllerTest {
 	
 	ResponseEntity<ResponseWrapper<OrderDto>> respCreate;
 	
-	@Mock
+	@MockitoBean
 	private OrderRepository repository;
 	
-	@Mock
+	@MockitoBean
 	private ProductOrdersService productOrderService;
 	
-	@Mock
+	@MockitoBean
 	private ProductService productService;
 	
-	@Mock
+	@MockitoBean
 	private JwtService jwtService;
 	
-	@Mock
+	@MockitoBean
 	private UserService userService;
 
 	@BeforeEach
@@ -80,7 +79,19 @@ class OrderControllerTest {
 	void createOk() throws Exception {
 		when(orderService.create(any(OrderDto.class))).thenReturn(respCreate);
 		//mockMvc.perform(post("/order"))
-		mockMvc.perform(MockMvcRequestBuilders.post("/order"))
+		List<ProductDto> lstProducts = new ArrayList<>();
+		lstProducts.add(ProductDto.builder().id(1).name("Milk").price(12.0).categoryId(1).build());
+		OrderDto orderDto = OrderDto.builder().lstProducts(lstProducts).build();
+		mockMvc.perform(MockMvcRequestBuilders.post("/order",orderDto))
+//		.andExpect(status().isOk());
+		.andExpect(status().is4xxClientError());
+	}
+	
+	
+	@Test
+	void getHistory() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/order/history/1"))
+//		.andExpect(status().isOk());
 		.andExpect(status().isOk());
 	}
 

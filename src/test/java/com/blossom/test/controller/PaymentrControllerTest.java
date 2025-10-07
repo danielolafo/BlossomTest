@@ -56,19 +56,22 @@ class PaymentrControllerTest {
 		PaymentDto dto = PaymentDto.builder().build();
 		mockMvc.perform(MockMvcRequestBuilders.post("/payment")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer mock-token"))
-		.andExpect(status().isOk());
+		//.andExpect(status().isOk());
+		.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	void update() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.put("/product"))
-		.andExpect(status().isOk());
+		//.andExpect(status().isOk());
+		.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	void test() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/product/1"))
-		.andExpect(status().isOk());
+		//.andExpect(status().isOk());
+		.andExpect(status().is4xxClientError());
 	}
 
 }

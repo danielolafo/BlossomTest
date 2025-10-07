@@ -1,7 +1,6 @@
 package com.blossom.test.service.impl;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import com.blossom.test.dto.PaymentDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Payment;
-import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.repository.PaymentRepository;
 
 @ExtendWith(MockitoExtension.class)
