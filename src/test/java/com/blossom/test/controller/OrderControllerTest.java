@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -33,7 +33,8 @@ import com.blossom.test.service.UserService;
 import com.blossom.test.service.impl.JwtService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(value = PaymentController.class)
+@WebMvcTest(value = OrderController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class OrderControllerTest {
 	
 	@Autowired
