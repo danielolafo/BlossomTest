@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
+import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.dto.RoleDto;
 import com.blossom.test.entity.Role;
 import com.blossom.test.entity.User;
@@ -80,7 +81,7 @@ public class LoginServiceImpl implements LoginService {
 	    }
 
 	@Override
-	public ResponseEntity<LoginResponseDto> signup(LoginDto loginDto) throws InvalidUserException {
+	public ResponseEntity<ResponseWrapper<LoginResponseDto>> signup(LoginDto loginDto) throws InvalidUserException {
 		if(loginDto.getUsername().isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -100,7 +101,12 @@ public class LoginServiceImpl implements LoginService {
 				.role(Role.builder().id(roleDto.getId()).build())
 				.build();
 		userRepository.save(newUser);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(
+				ResponseWrapper.<LoginResponseDto>builder()
+				.data(LoginResponseDto.builder().build())
+				.message("User created")
+				.build(),
+				HttpStatus.OK);
 	}
 	
 	private Set<SimpleGrantedAuthority> getAuthority(User user) {

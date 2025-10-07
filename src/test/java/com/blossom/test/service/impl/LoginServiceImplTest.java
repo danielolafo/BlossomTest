@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
+import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.dto.RoleDto;
 import com.blossom.test.entity.User;
 import com.blossom.test.exception.InvalidUserException;
@@ -79,7 +80,7 @@ public class LoginServiceImplTest {
 		LoginDto loginDto = LoginDto.builder().username("username").password("$d3fag").role("ADMIN").build();
 		RoleDto roleDto = RoleDto.builder().id(1).build();
 		when(roleService.findByRoleName(anyString())).thenReturn(roleDto);
-		ResponseEntity<LoginResponseDto> resp = loginServiceImpl.signup(loginDto);
+		ResponseEntity<ResponseWrapper<LoginResponseDto>> resp = loginServiceImpl.signup(loginDto);
 		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	

@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
+import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.exception.InvalidUserException;
 
 
@@ -11,6 +12,6 @@ public interface LoginService {
 	
 	public ResponseEntity<LoginResponseDto> login(LoginDto loginDto) throws InvalidUserException;
 	
-	public ResponseEntity<LoginResponseDto> signup(LoginDto loginDto) throws InvalidUserException;
+	public ResponseEntity<ResponseWrapper<LoginResponseDto>> signup(LoginDto loginDto) throws InvalidUserException;
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
 import com.blossom.test.dto.ProductDto;
+import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.service.LoginService;
 
@@ -50,7 +51,7 @@ public class LoginController {
 	    content = @Content)
 	  })
 	@PostMapping("/signup")
-	public ResponseEntity<LoginResponseDto> signup(@RequestBody LoginDto loginDto) throws InvalidUserException{
+	public ResponseEntity<ResponseWrapper<LoginResponseDto>> signup(@RequestBody LoginDto loginDto) throws InvalidUserException{
 		return this.loginService.signup(loginDto);
 	}
 
