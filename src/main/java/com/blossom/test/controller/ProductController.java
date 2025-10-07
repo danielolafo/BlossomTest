@@ -47,7 +47,7 @@ public class ProductController {
 	  @ApiResponse(responseCode = "400", description = "Duplicated product or invalid user", 
 	    content = @Content)
 	  })
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping
 	public ResponseEntity<ResponseWrapper<ProductDto>> create(@RequestBody ProductDto productDto){
 		return productService.create(productDto);

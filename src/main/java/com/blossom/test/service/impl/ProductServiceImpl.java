@@ -20,10 +20,12 @@ import com.blossom.test.dto.ProductDto;
 import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Product;
+import com.blossom.test.entity.Role;
 import com.blossom.test.entity.User;
 import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.ProductRepository;
 import com.blossom.test.service.ProductService;
+import com.blossom.test.service.RoleService;
 import com.blossom.test.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,14 +36,17 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository repository;
 	private final JwtService jwtService;
 	private final UserService userService;
+	private final RoleService roleService;
 	
 	public ProductServiceImpl(
 			ProductRepository repository,
 			JwtService jwtService,
-			UserService userService) {
+			UserService userService,
+			RoleService roleService) {
 		this.repository = repository;
 		this.jwtService = jwtService;
 		this.userService = userService;
+		this.roleService = roleService;
 	}
 
 	@Override
@@ -51,6 +56,17 @@ public class ProductServiceImpl implements ProductService {
 			String jwt = request.getHeader("Authorization");
 			String username = this.jwtService.extractUsername(jwt.split(" ")[1]);
 			User user = this.userService.findByUsername(username);
+			
+			Role role = this.roleService.getRolesById(user.getRole().getId());
+			if(!role.getName().equals("ADMIN")) {
+				return new ResponseEntity<>(
+						ResponseWrapper.<ProductDto>builder()
+						.data(ProductDto.builder()
+								.build())
+						.message("Only admin users can create products")
+						.build(),
+						HttpStatus.FORBIDDEN);
+			}
 			
 			List<Product> productList = this.repository.findByNameIgnoreCase(productDto.getName());
 			if(!productList.isEmpty()) {
