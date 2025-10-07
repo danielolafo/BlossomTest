@@ -1,6 +1,7 @@
 package com.blossom.test.service.impl;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service;
 
 import com.blossom.test.dto.LoginDto;
 import com.blossom.test.dto.LoginResponseDto;
+import com.blossom.test.dto.RoleDto;
 import com.blossom.test.entity.Role;
 import com.blossom.test.entity.User;
 import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.repository.UserRepository;
 import com.blossom.test.service.LoginService;
+import com.blossom.test.service.RoleService;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -28,16 +31,19 @@ public class LoginServiceImpl implements LoginService {
     //private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 	
 	public LoginServiceImpl(
 			JwtService jwtService,
 			UserRepository userRepository,
 	        AuthenticationManager authenticationManager,
-	        BCryptPasswordEncoder passwordEncoder) {
+	        BCryptPasswordEncoder passwordEncoder,
+	        RoleService roleService) {
 		this.jwtService = jwtService;
 		this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
 	}
 
 	@Override
@@ -81,11 +87,17 @@ public class LoginServiceImpl implements LoginService {
 		if(loginDto.getPassword().isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		
+		RoleDto roleDto = this.roleService.findByRoleName(loginDto.getRole());
+		if(Objects.isNull(roleDto.getId())) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+		
 		User newUser = User.builder()
 				.email(loginDto.getUsername())
 				.username(loginDto.getUsername())
 				.uPassword(passwordEncoder.encode(loginDto.getPassword()))
-				.role(Role.builder().id(1).build())
+				.role(Role.builder().id(roleDto.getId()).build())
 				.build();
 		userRepository.save(newUser);
 		return new ResponseEntity<>(HttpStatus.OK);
