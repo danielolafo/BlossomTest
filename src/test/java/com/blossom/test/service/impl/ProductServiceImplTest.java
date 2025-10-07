@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -30,10 +31,12 @@ import com.blossom.test.dto.ProductSearchRequestDto;
 import com.blossom.test.dto.ResponseWrapper;
 import com.blossom.test.entity.Category;
 import com.blossom.test.entity.Product;
+import com.blossom.test.entity.Role;
 import com.blossom.test.entity.User;
 import com.blossom.test.exception.InvalidUserException;
 import com.blossom.test.mapper.ProductMapper;
 import com.blossom.test.repository.ProductRepository;
+import com.blossom.test.service.RoleService;
 import com.blossom.test.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,6 +53,9 @@ class ProductServiceImplTest {
 	
 	@Mock
 	private UserService userService;
+	
+	@Mock
+	private RoleService roleService;
 
 	
 	List<Product> productList;
@@ -72,7 +78,7 @@ class ProductServiceImplTest {
 		productDto = ProductMapper.INSTANCE.toDto(product);
 		
 		user = new User();
-		user = User.builder().id(1).username("username").build();
+		user = User.builder().id(1).username("username").role(Role.builder().id(1).build()).build();
 		
 		// prepare
         request = new MockHttpServletRequest();
@@ -86,14 +92,18 @@ class ProductServiceImplTest {
 		when(jwtService.extractUsername(anyString())).thenReturn("user");
 		when(userService.findByUsername(anyString())).thenReturn((User) user);
 		when(repository.findByNameIgnoreCase(anyString())).thenReturn(new ArrayList<>());
+		when(roleService.getRolesById(anyInt())).thenReturn(Role.builder().id(1).name("ADMIN").build());
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.create(productDto);
 		assertTrue(resp.hasBody());
 		assertTrue(resp.getStatusCode().is2xxSuccessful());
 	}
 	
 	@Test
-	void createDuplicated() {
+	void createDuplicated() throws InvalidUserException {
+		when(jwtService.extractUsername(anyString())).thenReturn("user");
+		when(userService.findByUsername(anyString())).thenReturn((User) user);
 		when(repository.findByNameIgnoreCase(anyString())).thenReturn(productList);
+		when(roleService.getRolesById(anyInt())).thenReturn(Role.builder().id(1).name("ADMIN").build());
 		ResponseEntity<ResponseWrapper<ProductDto>> resp = productServiceImpl.create(productDto);
 		assertTrue(resp.hasBody());
 		assertTrue(resp.getStatusCode().is4xxClientError());
