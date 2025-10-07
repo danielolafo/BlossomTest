@@ -3,7 +3,6 @@ package com.blossom.test.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +26,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/product")
@@ -105,8 +106,8 @@ public class ProductController {
 	  })
 	@GetMapping
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> getAll(
-			@Parameter(description="The number of the page to return") @RequestParam("numPage")Integer numPage,
-			@Parameter(description="The number of results to return") @RequestParam("pageSize")Integer pageSize,
+			@Parameter(description="The number of the page to return") @RequestParam("numPage") @NotNull(message="The number of the page is required") Integer numPage,
+			@Parameter(description="The number of results to return") @RequestParam("pageSize") @NotNull(message="The nsize of the result page is required") Integer pageSize,
 			@Parameter(description="The column criteria to order the results") @RequestParam("orderBy")Integer orderBy,
 			@Parameter(description="The max price of the products to search", hidden=true) @ModelAttribute PaginationRequestDto paginationRequestDto){
 		return productService.getAll(paginationRequestDto);
@@ -122,8 +123,8 @@ public class ProductController {
 	  })
 	@GetMapping("/search")
 	public ResponseEntity<ResponseWrapper<List<ProductDto>>> search(
-			@Parameter(description="The number of the page to return") @RequestParam(name="numPage")Integer numPage,
-			@Parameter(description="The number of results to return") @RequestParam(name="pageSize")Integer pageSize,
+			@Parameter(description="The number of the page to return") @RequestParam(name="numPage") @NotNull(message="The number of the page is required") Integer numPage,
+			@Parameter(description="The number of results to return") @RequestParam(name="pageSize") @NotNull(message="The nsize of the result page is required") Integer pageSize,
 			@Parameter(description="The column criteria to order the results") @RequestParam(name="sortBy", required=false)Integer sortBy,
 			@Parameter(description="The min price of the products to search") @RequestParam(name="minPrice", required=false)Double minPrice,
 			@Parameter(description="The max price of the products to search") @RequestParam(name="maxPrice", required=false)Double maxPrice,

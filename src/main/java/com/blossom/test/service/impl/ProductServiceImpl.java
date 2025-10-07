@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -29,6 +30,7 @@ import com.blossom.test.service.RoleService;
 import com.blossom.test.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -50,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseWrapper<ProductDto>> create(ProductDto productDto) {
+	public ResponseEntity<ResponseWrapper<ProductDto>> create(@Valid ProductDto productDto) {
 		try {
 			HttpServletRequest request =  ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 			String jwt = request.getHeader("Authorization");
