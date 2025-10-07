@@ -9,21 +9,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.blossom.test.service.OrderService;
+import com.blossom.test.config.JwtAuthenticationFilter;
+import com.blossom.test.service.impl.JwtService;
+import com.blossom.test.service.impl.PaymentStrategyServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebMvcTest(value = OrderController.class)
+@WebMvcTest(value = PaymentController.class)
 class PaymentrControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@MockitoBean
-	private OrderService orderService;
+	private PaymentStrategyServiceImpl paymentStrategyService;
+	
+	@MockitoBean
+	private JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	@MockitoBean
+	private JwtService jwtService;
 
 	@BeforeEach
 	void setUp() throws Exception {
